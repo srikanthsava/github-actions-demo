@@ -1,0 +1,31 @@
+name: Kubescape
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  nsa-security-check:
+    runs-on: ubunt-latest
+
+    steps:
+    # Step 1: Checkout the repository
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    # Step 2: Install Kubescape
+    - name: Install Kubescape
+      run: |
+        curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash
+
+    # Step 3: Run Kubescape Scan
+    - name: Run Kubescape Scan
+      run: |
+        kubescape scan framework nsa --format json --output results.json --fail-threshold 1 -f ./path/to/your/manifests/
+
+    # Step 4: Scan files
+    - name: Scan YAML files
+      run: kubescape scan framework nsa *.yaml
+
